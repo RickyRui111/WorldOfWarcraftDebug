@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>687</width>
+    <height>555</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QTextEdit" name="correctext">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>30</y>
+     <width>311</width>
+     <height>461</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="wrongtext">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>311</width>
+     <height>461</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="tomainbt">
+   <property name="geometry">
+    <rect>
+     <x>580</x>
+     <y>510</y>
+     <width>93</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>主菜单</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="horizontalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>500</y>
+     <width>195</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="confirmbt">
+      <property name="text">
+       <string>开始对比</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="totestbt">
+      <property name="text">
+       <string>返回</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>241</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>请输入你的输出  总行数:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>350</x>
+     <y>10</y>
+     <width>131</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>正确输出  总行数:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>548</x>
+     <y>10</y>
+     <width>111</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>不同的行数:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="wTextLines">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>10</y>
+     <width>69</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="cTextLines">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>10</y>
+     <width>61</width>
+     <height>19</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="difLines">
+   <property name="geometry">
+    <rect>
+     <x>630</x>
+     <y>10</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
