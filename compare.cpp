@@ -1,6 +1,7 @@
 #include "compare.h"
 #include "ui_compare.h"
 #include"test.h"
+#include"correctexe.cpp"
 compare::compare(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::compare)
@@ -16,7 +17,7 @@ compare::~compare()
 
 void compare::sendData(QString data){
     DATA=data;
-    //ui->correcttext->setText(魔兽.cpp(data))
+    ui->correctext->setText(correctrun(data));
     ui->correctext->setReadOnly(true);
 }
 void compare::on_totestbt_clicked()
