@@ -9,7 +9,7 @@ Mybutton::Mybutton(QWidget *parent,
                             bool music,
                             int health,
                             int weaponn
-                            )
+                            ):QPushButton(parent)
 {//调用基类的构造函数初始化基类 以后有什么自己再加
     //初始化按钮：
 
