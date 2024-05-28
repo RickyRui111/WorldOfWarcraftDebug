@@ -20,6 +20,10 @@ private slots:
 
     void on_confirmbt_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
 private:
     Ui::inputwidget *ui;
     Widget* w;

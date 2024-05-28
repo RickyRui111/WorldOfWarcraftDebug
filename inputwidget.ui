@@ -49,7 +49,7 @@
     <string>确认</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -60,28 +60,35 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>case 1:</string>
+       <string>样例1：</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label">
+     <widget class="QPushButton" name="pushButton">
       <property name="text">
-       <string>TextLabel</string>
+       <string>oj测试样例</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>样例2</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
-       <string>case 2:</string>
+       <string>txt测试样例</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="label_3">
       <property name="text">
        <string>TextLabel</string>
       </property>
@@ -90,14 +97,7 @@
     <item>
      <widget class="QPushButton" name="pushButton_3">
       <property name="text">
-       <string>case 3:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>TextLabel</string>
+       <string>样例3：</string>
       </property>
      </widget>
     </item>
