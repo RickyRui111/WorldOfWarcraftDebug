@@ -16,16 +16,24 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    CaseInfo.cpp \
     compare.cpp \
     inputwidget.cpp \
     main.cpp \
+    mybasebutton.cpp \
+    mybutton.cpp \
+    mycitybutton.cpp \
     test.cpp \
     tipswidget.cpp \
     widget.cpp
 
 HEADERS += \
+    CaseInfo.h \
     compare.h \
     inputwidget.h \
+    mybasebutton.h \
+    mybutton.h \
+    mycitybutton.h \
     test.h \
     tipswidget.h \
     widget.h
