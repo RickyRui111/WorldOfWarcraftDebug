@@ -1,42 +1,44 @@
 #include "mybutton.h"
-#include <QHBoxLayout>
-#include <QDebug>
-#include <QTimer>
+
 
 Mybutton::Mybutton(QWidget *parent,
+                   QString name,
                             QIcon image,
                             bool mask,
-                            bool music,
-                            int health,
-                            int weaponn
-                            ):QPushButton(parent)
-{//调用基类的构造函数初始化基类 以后有什么自己再加
+                            bool music
+                            ):QPushButton(name,parent)
+{
+ /*basic功能：
+    1. 初始化一个悬浮弹窗xuanfu 垂直布局 在按钮下方 安装eventfilter
+    2. 可以初始化name image mask music
+    */
     //初始化按钮：
 
     //初始化页面：
-
     xuanfu=new QWidget(nullptr,Qt::ToolTip);
     //Qt::ToolTip 用于指定创建的窗口是一个工具提示窗口
     xuanfu->setWindowFlag(Qt::Popup);
 
-    QVBoxLayout *layout=new QVBoxLayout(xuanfu);
-    QLabel *label4=new QLabel("herotype:卢本伟",xuanfu);
-    QLabel *label = new QLabel("health: 123",xuanfu);
-    QLabel *label2 = new QLabel("attack:999",xuanfu);
-    QLabel *label3 = new QLabel("weapon:屠龙宝刀",xuanfu);//这个label 时xuanfu的！
-    QPushButton *button=new QPushButton("我还可以有按钮",xuanfu);
-    layout->addWidget(label);
-    layout->addWidget(label2);
-    layout->addWidget(label3);
-    layout->addWidget(label4);
-    layout->addWidget(button);
+    layout=new QVBoxLayout(xuanfu);
+
+//    QLabel *label4=new QLabel("herotype:卢本伟",xuanfu);
+//    QLabel *label = new QLabel("health: 123",xuanfu);
+//    QLabel *label2 = new QLabel("attack:999",xuanfu);
+//    QLabel *label3 = new QLabel("weapon:屠龙宝刀",xuanfu);//这个label 时xuanfu的！
+//    QPushButton *button=new QPushButton("我还可以有按钮",xuanfu);
+//    layout->addWidget(label);
+//    layout->addWidget(label2);
+//    layout->addWidget(label3);
+//    layout->addWidget(label4);
+//    layout->addWidget(button);
+
     xuanfu->setLayout(layout);
-    xuanfu->adjustSize();
+    xuanfu->adjustSize();//根据内容多少调整页面大小
 
     xuanfu->installEventFilter(this);
 }
 
-void Mybutton::enterEvent(QEnterEvent *event)//注意这个基类的参数是 QEnterEvent *
+void Mybutton::enterEvent(QEvent *event)//注意这个基类的参数是 QEnterEvent *
 {//不知道是不是版本不一样的问题？ 那之后还要改？？
     QPushButton::enterEvent(event);
     //调整位置， 显示
@@ -81,4 +83,3 @@ bool Mybutton::eventFilter(QObject *watched, QEvent *event) {
     }
     return QPushButton::eventFilter(watched, event);
 }
-

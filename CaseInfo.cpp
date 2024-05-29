@@ -1,5 +1,38 @@
 #include "CaseInfo.h"
 
+void Allcases::addACase(const QPair<QString,Caseinfo> & Case)
+{
+    Cases.push_back(Case);
+}
+
+Gamestate::Gamestate(int t,set<Warrior> &s,Base &rb,Base &bb,vector<City> city):ctime(t),rbase(rb),bbase(bb)
+{
+    for(auto i:s)
+        samurai.emplace(i);
+    for(auto i:city)
+        cityline.push_back(i);
+}
+
+Caseinfo::Caseinfo(vector<Gamestate> game)
+{
+    for(auto i:game)
+        info.push_back(i);
+}
+
+Caseinfo::Caseinfo(int m,int n,int r,int k,int t,string *ror,string *bor,map<string,int> &H,map<string,int> &at)
+:M(m),N(n),R(r),K(k),T(t),hp(H),atk(at)
+{
+    copy(ror,ror+5,rord);
+    copy(bor,bor+5,bord);
+};
+
+Caseinfo::Caseinfo(){};
+
+void Caseinfo::addState(Gamestate g)
+{
+    info.push_back(g);
+}
+
 #define maxn 35
 #define rep(a,b,c)	for (int (a)=b;a<=c;a++)
 #define per(a,b,c)	for (int (a)=b;a>=c;a--)
@@ -11,8 +44,6 @@ string rord[5]={"iceman","lion","wolf","ninja","dragon"};
 string bord[5]={"lion","dragon","ninja","iceman","wolf"};
 map<string,int> hp,atk,cnt;
 int M,N,R,K,T;
-
-Caseinfo ANS(M,N,R,K,T,rord,bord,hp,atk);
 
 Warrior::Warrior(string s,int ptr,int M_have,int c){
         name=s;
@@ -104,14 +135,6 @@ void init(){
     samurai.clear();
 }
 
-void saveAState(int t,Base rb,Base bb)
-{
-    vector<City> cityvec;
-    for(auto i:city)
-        cityvec.push_back(i);
-    ANS.addState(Gamestate(t,samurai,rb,bb,cityvec));
-}
-
 bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
     if (wred.color) swap(wred,wblue);
     Warrior mred=wred,mblue=wblue;
@@ -148,9 +171,9 @@ bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
 }
 
 QString output="";
-int solve(vector<int> v,int indexcnt);
+Caseinfo *ANS;
 
-QPair<QString,Caseinfo> correctrun(QString data){
+Allcases correctrun(QString data){
     QStringList lines = data.split(QRegExp("\n"), QString::SkipEmptyParts);
     vector<int> intArray;
 
@@ -172,14 +195,55 @@ QPair<QString,Caseinfo> correctrun(QString data){
     int indexcnt=0;
     int t;
     t=intArray[indexcnt++];
-    //scanf("%d",&t);
-    output="";
+    Allcases All;
     rep(i,1,t){
         //printf("Case %d:\n",i);
+        //
+        //以下为提前要一个值而已
+        //scanf("%d",&t);
+        int indexcn=indexcnt;
+        vector<int>v=intArray;
+        M=v[indexcn++];
+        N=v[indexcn++];
+        R=v[indexcn++];
+        K=v[indexcn++];
+        T=v[indexcn++];
+        hp["dragon"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["ninja"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["iceman"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["lion"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["wolf"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["dragon"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["ninja"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["iceman"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["lion"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["wolf"]=v[indexcn++];
+        output="";
+        Caseinfo ans(M,N,R,K,T,rord,bord,hp,atk);
+        ANS=&ans;
         output+=QString("Case %1:\n").arg(i);
         indexcnt=solve(intArray,indexcnt);
+        QPair<QString,Caseinfo> tmp(output,ans);
+        All.addACase(tmp);
     }
-    return QPair<QString,Caseinfo>(output,ANS);
+    return All;
+}
+
+void saveAState(int t,Base rb,Base bb)
+{
+    vector<City> cityvec;
+    for(auto i:city)
+        cityvec.push_back(i);
+    ANS->addState(Gamestate(t,samurai,rb,bb,cityvec));
 }
 
 int solve(vector<int> v,int indexcnt){
@@ -350,16 +414,16 @@ int solve(vector<int> v,int indexcnt){
                     }
                     samurai.emplace(k);//新的武士放进去
                 }
-                if (rbase.down||bbase.down)    return indexcnt;//return 游戏结束
                 saveAState(t,rbase,bbase);
+                if (rbase.down||bbase.down)    return indexcnt;//return 游戏结束
                 break;
             }
             case (20):{
                 rep(i,1,N){
                     city[i].m+=10;
                 }
-                break;
                 saveAState(t,rbase,bbase);
+                break;
             }
             case (30):{
                 vector<Warrior> cnt[maxn];
@@ -707,6 +771,7 @@ int solve(vector<int> v,int indexcnt){
                       .arg(bbase.m); // 红色基地的元素数量
             //printf("%.3d:%.2d %d elements in blue headquarter\n",hour,minute,bbase.m);
             //这里是报数就不存状态了！！
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (55):{
@@ -790,6 +855,8 @@ int solve(vector<int> v,int indexcnt){
                     //printf("\n");
                     }
                 }
+                saveAState(t,rbase,bbase);
+                break;
             }
         }
     }

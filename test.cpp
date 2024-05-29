@@ -1,16 +1,230 @@
 #include "test.h"
 #include "ui_test.h"
+#include <QScreen>
+#include <QApplication>
+#include <QEvent>
 
-test::test(QString input,int times,QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::test)
+void adjustFontSize(QLabel *label) {
+    QFont font = label->font();
+    int fontSize = 1;
+    QFontMetrics fm(font);
+    int maxWidth = label->width() - 2; // Subtract some padding
+    int textWidth = fm.width(label->text());
+
+    // Increase font size while it fits to the label width
+    while (textWidth <= maxWidth && fontSize < 256) {
+        font.setPointSize(fontSize);
+        label->setFont(font);
+        fm = QFontMetrics(font);
+        textWidth = fm.width(label->text());
+        fontSize++;
+    }
+    // Decrease font size to make sure it really fits
+    if (textWidth > maxWidth) {
+        font.setPointSize(fontSize - 2);
+        label->setFont(font);
+    }
+}
+
+test::test(QPair<QString,Caseinfo> &input,int times,int Case,QWidget *parent) :
+    QWidget(parent),reportLabel(new QLabel(this)),Casenum(Case),wrongcaselabel(new QLabel(this)),
+    ui(new Ui::test),/*layout(new QHBoxLayout),*/back(new QPushButton("back",this)),forward(new QPushButton("forward",this))
+//  ,Vlayout1(new QVBoxLayout),Vlayout2(new QVBoxLayout),Hcities(new QHBoxLayout),HWidgets(new QHBoxLayout)
 {
     ui->setupUi(this);
-    caseinput=input;
-    Time=times;
+    //移到屏幕中央：
+//    QScreen *screen = QApplication::primaryScreen();
+//    QRect screenGeometry = screen->geometry();
+    this->resize(1000,650);
+////    this->setFixedSize(800,650);
+//    int x = (screenGeometry.width() - this->width()) / 2;
+//    int y = (screenGeometry.height() - this->height()) / 2;
+//    this->move(x,y);
+
+    infopair=input;
+    Time=0;//传进来的times不知道是啥！！这个还要再合一下
+    createfromtime(Time);
+//    setLayout(layout);
+    connect(back,&QPushButton::clicked,this,&test::bac);
+    connect(forward,&QPushButton::clicked,this,&test::forw);
+    back->move(400,450);
+    forward->move(500,450);
+    reportLabel->resize(500,150);
+    reportLabel->move((this->width()-reportLabel->width())*0.5
+                      ,50);
+    reportLabel->setText(QString("%1:%2")
+                         .arg(infopair.second.info[Time].ctime/60, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
+                         .arg(infopair.second.info[Time].ctime%60, 2, 10, QChar('0'))); // 分钟，2位宽度，十进制，用0填充;
+    adjustFontSize(reportLabel);
+
+    wrongcaselabel->move(800,10);
+    wrongcaselabel->resize(200,50);
+    wrongcaselabel->setText(QString("Wrong Case%1").arg(Case));
+    adjustFontSize(wrongcaselabel);
+
+//    Vlayout1->addWidget(back);
+//    Vlayout1->addWidget(forward);
+//    Vlayout2->addLayout(Hcities);
+//    Vlayout2->addLayout(HWidgets);
+//    layout->addLayout(Vlayout1);
+//    layout->addLayout(Vlayout2);
 }
 
 test::~test()
 {
     delete ui;
+//    delete layout;
+    for(auto w:Mybasebuttons)
+        delete w;
+    for(auto w:Mycitybuttons)
+        delete w;
+    for(auto w:Mywidget)
+        delete w;
 }
+
+//void deleteLayout(QLayout* layout) {
+//    QLayoutItem* item;
+//    while ((item = layout->takeAt(0)) != nullptr) {
+//        if (item->widget()) {
+//            delete item->widget();
+//        } else if (item->layout()) {
+//            deleteLayout(item->layout());
+//        }
+//        delete item;
+//    }
+//    delete layout;  // 删除布局本身
+//}
+
+//void printLayoutProperties(QHBoxLayout *layout) {
+//    if (!layout) return;  // Ensure the layout is not null
+
+//    // 获取并打印间隔和边距
+//    qDebug() << "Spacing:" << layout->spacing();
+//    qDebug() << "Contents Margins:" << layout->contentsMargins();
+
+//    // 打印布局中的项目数
+//    qDebug() << "Number of items in the layout:" << layout->count();
+
+//    // 遍历布局中的所有项，打印每个项的类型和可能的额外信息
+//    for (int i = 0; i < layout->count(); ++i) {
+//        QLayoutItem* item = layout->itemAt(i);
+//        if (item->widget()) {
+//            qDebug() << "Item" << i << ": Widget" << item->widget()->metaObject()->className();
+//        } else if (item->spacerItem()) {
+//            qDebug() << "Item" << i << ": SpacerItem" << item->spacerItem()->sizeHint();
+//        } else if (item->layout()) {
+//            qDebug() << "Item" << i << ": Sub-layout" << item->layout()->metaObject()->className();
+//        }
+//    }
+
+//     //如果需要，可以递归打印子布局的属性
+//}
+
+void test::forw()
+{
+    if(Time+1!=infopair.second.info.size())
+        ++Time;
+    switchtotime(Time);
+}
+
+
+void test::bac()
+{
+    if(Time)
+        --Time;
+    switchtotime(Time);
+}
+
+void test::switchtotime(int t)//把t的世界加载出来
+{
+    //注意，这里的t必须要转换成对应的连续正整数索引
+    //实现方式：通过文本对比中第一个错误的点的文本输出时间计算到总时间
+    //         再通过一个映射映射到连续索引
+    //deleteLayout(layout);
+    int citysum=infopair.second.N;
+    Gamestate Ninfo=infopair.second.info[t];
+    qDebug()<<Ninfo.bbase.m;
+    Mybasebuttons[0]->rewrite(Ninfo.rbase);
+    Mybasebuttons[1]->rewrite(Ninfo.bbase);
+    for(int i=1;i<=citysum;++i)
+    {
+       Mycitybuttons[i-1]->rewrite(Ninfo.cityline[i-1]);
+    }
+    reportLabel->setText(QString("%1:%2")
+                         .arg(infopair.second.info[Time].ctime/60, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
+                         .arg(infopair.second.info[Time].ctime%60, 2, 10, QChar('0'))); // 分钟，2位宽度，十进制，用0填充;
+    adjustFontSize(reportLabel);
+}
+
+void test::createfromtime(int t)
+{
+    //注意，这里的t必须要转换成对应的连续正整数索引
+    //实现方式：通过文本对比中第一个错误的点的文本输出时间计算到总时间
+    //         再通过一个映射映射到连续索引
+    //deleteLayout(layout);
+    //    QLabel *citynum=new QLabel("citynum",this);
+    //    Mywidget.push_back(citynum);
+    //    HWidgets->addWidget(citynum);
+
+    int basel=130;    int cityl=80;     int interval=5;//限制的最小可以接受的interval
+    int citysum=infopair.second.N;
+    qDebug()<<citysum;
+    Gamestate Ninfo=infopair.second.info[t];
+    Mybasebutton *b1=new Mybasebutton(Ninfo.rbase,this,"Red");
+    b1->resize(basel,basel);
+    b1->move(0,(this->height()-b1->height())*0.5);
+//    b1->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    b1->setMaximumHeight(250);
+//    b1->resize(165,165);//必须先setheight再resize
+    Mybasebuttons.push_back(b1);
+//    layout->addWidget(b1);
+    Mybasebutton *b2=new Mybasebutton(Ninfo.bbase,this,"Blue");
+    b2->resize(130,130);
+    b2->move((this->width()-b2->width()),(this->height()-b2->height())*0.5);
+
+    int layout=0;//0 一种方案   1 一种方案
+    if(citysum*(cityl+interval)+interval<this->width()-2*basel)
+        layout=1;
+    for(int i=1;i<=citysum;++i)
+    {
+        Mycitybutton *c=new Mycitybutton(Ninfo.cityline[i-1],this,QString("City%1").arg(i));
+        c->resize(cityl,cityl);
+//        c->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//        c->setMaximumHeight(200);
+        //c->resize(120,120);
+//        Hcities->addWidget(c);
+        if(layout==1)
+        {
+            int my=(this->height()-cityl)*0.5;//排在画面中央
+            int ninterval=(this->width()-2*basel-citysum*cityl)/(citysum+1);
+            c->move(basel+ninterval+(ninterval+cityl)*(i-1)
+                                         ,my+(i%2==0?-10:10));
+        }
+        else
+        {
+            int space=this->width()-2*basel;
+            int ncityl=(space-(citysum+1)*interval)/citysum;
+            c->resize(ncityl,ncityl);
+            int my=(this->height()-ncityl)*0.5;//排在画面中央
+            int ninterval=(space-ncityl*citysum)/(citysum+1);
+            c->move(basel+ninterval+(ninterval+ncityl)*(i-1),
+                    my+(i%2==0?-10:10));
+        }
+
+        Mycitybuttons.push_back(c);
+    }
+    //下面开始排city的队：
+
+    //在最小interval限定下满足不超过
+    //那就横着一条直线
+
+//    b2->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+//    b2->setMaximumHeight(250);
+    //b2->resize(165,165);
+    Mybasebuttons.push_back(b2);
+//    layout->addWidget(b2);
+//    //printLayoutProperties(layout);
+//    this->adjustSize();
+}
+
+
