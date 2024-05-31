@@ -16,23 +16,37 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    CaseInfo.cpp \
     compare.cpp \
+    incity.cpp \
     inputwidget.cpp \
+    inwarrior.cpp \
     main.cpp \
+    mybasebutton.cpp \
+    mybutton.cpp \
+    mycitybutton.cpp \
     test.cpp \
     tipswidget.cpp \
     widget.cpp
 
 HEADERS += \
+    CaseInfo.h \
     compare.h \
+    incity.h \
     inputwidget.h \
+    inwarrior.h \
+    mybasebutton.h \
+    mybutton.h \
+    mycitybutton.h \
     test.h \
     tipswidget.h \
     widget.h
 
 FORMS += \
     compare.ui \
+    incity.ui \
     inputwidget.ui \
+    inwarrior.ui \
     test.ui \
     tipswidget.ui \
     widget.ui
@@ -41,3 +55,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    redcitypic.qrc
