@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>redflagp.jpg</file>
+        <file>redcityp.jpg</file>
+        <file>swordp.jpg</file>
+        <file>bombp.jpg</file>
+        <file>nonecityp.jpg</file>
+        <file>blueflagp.jpg</file>
+        <file>bluecityp.jpg</file>
+    </qresource>
+</RCC>

@@ -55,14 +55,14 @@
      <x>20</x>
      <y>70</y>
      <width>91</width>
-     <height>151</height>
+     <height>173</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>样例1：</string>
+       <string>测试样例1：</string>
       </property>
      </widget>
     </item>
@@ -76,7 +76,7 @@
     <item>
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>样例2</string>
+       <string>测试样例2：</string>
       </property>
      </widget>
     </item>
@@ -84,20 +84,6 @@
      <widget class="QPushButton" name="pushButton_2">
       <property name="text">
        <string>txt测试样例</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="text">
-       <string>样例3：</string>
       </property>
      </widget>
     </item>

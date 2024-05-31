@@ -2,8 +2,10 @@
 #define COMPARE_H
 
 #include <QWidget>
+#include "CaseInfo.h"
 #include"widget.h"
 #include"inputwidget.h"
+
 namespace Ui {
 class compare;
 }
@@ -13,9 +15,10 @@ class compare : public QWidget
     Q_OBJECT
 
 public:
-    int minute;
+    int Time;
     int Casenum;
     QString DATA;
+    QPair<QString,Caseinfo> output;
     Widget* w;
     inputwidget* iw;
 
