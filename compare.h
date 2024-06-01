@@ -3,8 +3,6 @@
 
 #include <QWidget>
 #include "CaseInfo.h"
-#include"widget.h"
-#include"inputwidget.h"
 
 namespace Ui {
 class compare;
@@ -18,12 +16,10 @@ public:
     int Time;
     int Casenum;
     QString DATA;
-    QPair<QString,Caseinfo> output;
-    Widget* w;
-    inputwidget* iw;
+    Allcases output;
 
 public:
-    explicit compare(Widget* ww,inputwidget* iww,QWidget *parent = nullptr);
+    explicit compare(QWidget *parent = nullptr);
     void sendData(QString data);
     ~compare();
 
@@ -31,8 +27,6 @@ private slots:
     void on_totestbt_clicked();
 
     void on_confirmbt_clicked();
-
-    void on_tomainbt_clicked();
 
 private:
     Ui::compare *ui;

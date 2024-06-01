@@ -18,9 +18,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     CaseInfo.cpp \
     compare.cpp \
-    incity.cpp \
     inputwidget.cpp \
-    inwarrior.cpp \
     main.cpp \
     mybasebutton.cpp \
     mybutton.cpp \
@@ -32,9 +30,7 @@ SOURCES += \
 HEADERS += \
     CaseInfo.h \
     compare.h \
-    incity.h \
     inputwidget.h \
-    inwarrior.h \
     mybasebutton.h \
     mybutton.h \
     mycitybutton.h \
@@ -44,9 +40,7 @@ HEADERS += \
 
 FORMS += \
     compare.ui \
-    incity.ui \
     inputwidget.ui \
-    inwarrior.ui \
     test.ui \
     tipswidget.ui \
     widget.ui
@@ -57,4 +51,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    redcitypic.qrc
+    images.qrc

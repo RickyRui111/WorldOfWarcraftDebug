@@ -1,5 +1,10 @@
 #include "CaseInfo.h"
 
+void Allcases::addACase(const QPair<QString,Caseinfo> & Case)
+{
+    Cases.push_back(Case);
+}
+
 Gamestate::Gamestate(int t,set<Warrior> &s,Base &rb,Base &bb,vector<City> city):ctime(t),rbase(rb),bbase(bb)
 {
     for(auto i:s)
@@ -168,7 +173,7 @@ bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
 QString output="";
 Caseinfo *ANS;
 
-QPair<QString,Caseinfo> correctrun(QString data){
+Allcases correctrun(QString data){
     QStringList lines = data.split(QRegExp("\n"), QString::SkipEmptyParts);
     vector<int> intArray;
 
@@ -190,45 +195,47 @@ QPair<QString,Caseinfo> correctrun(QString data){
     int indexcnt=0;
     int t;
     t=intArray[indexcnt++];
-
-    //
-    //以下为提前要一个值而已
-    //scanf("%d",&t);
-    int indexcn=indexcnt;
-    vector<int>v=intArray;
-    M=v[indexcn++];
-    N=v[indexcn++];
-    R=v[indexcn++];
-    K=v[indexcn++];
-    T=v[indexcn++];
-    hp["dragon"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    hp["ninja"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    hp["iceman"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    hp["lion"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    hp["wolf"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    atk["dragon"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    atk["ninja"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    atk["iceman"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    atk["lion"]=v[indexcn++];
-    //scanf("%d",&tmp);
-    atk["wolf"]=v[indexcn++];
-    output="";
-    Caseinfo ans(M,N,R,K,T,rord,bord,hp,atk);
-    ANS=&ans;
+    Allcases All;
     rep(i,1,t){
         //printf("Case %d:\n",i);
+        //
+        //以下为提前要一个值而已
+        //scanf("%d",&t);
+        int indexcn=indexcnt;
+        vector<int>v=intArray;
+        M=v[indexcn++];
+        N=v[indexcn++];
+        R=v[indexcn++];
+        K=v[indexcn++];
+        T=v[indexcn++];
+        hp["dragon"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["ninja"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["iceman"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["lion"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["wolf"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["dragon"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["ninja"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["iceman"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["lion"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["wolf"]=v[indexcn++];
+        output="";
+        Caseinfo ans(M,N,R,K,T,rord,bord,hp,atk);
+        ANS=&ans;
         output+=QString("Case %1:\n").arg(i);
         indexcnt=solve(intArray,indexcnt);
+        QPair<QString,Caseinfo> tmp(output,ans);
+        All.addACase(tmp);
     }
-    return QPair<QString,Caseinfo>(output,ans);
+    return All;
 }
 
 void saveAState(int t,Base rb,Base bb)
@@ -764,6 +771,7 @@ int solve(vector<int> v,int indexcnt){
                       .arg(bbase.m); // 红色基地的元素数量
             //printf("%.3d:%.2d %d elements in blue headquarter\n",hour,minute,bbase.m);
             //这里是报数就不存状态了！！
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (55):{
@@ -847,6 +855,8 @@ int solve(vector<int> v,int indexcnt){
                     //printf("\n");
                     }
                 }
+                saveAState(t,rbase,bbase);
+                break;
             }
         }
     }

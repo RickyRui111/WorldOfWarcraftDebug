@@ -1,42 +1,20 @@
-#include "correctexe.h"
-#include <string>
-#include<algorithm>
-#include<map>
-#include<set>
-#include<vector>
-#include<cstring>
-#include<QDebug>
+#include "CaseInfo.h"
+
 #define maxn 35
 #define rep(a,b,c)	for (int (a)=b;a<=c;a++)
 #define per(a,b,c)	for (int (a)=b;a>=c;a--)
 
-
-correctexe::correctexe(QObject *parent)
-{
-
-}
-
 using namespace std;
+
 int t;
 string rord[5]={"iceman","lion","wolf","ninja","dragon"};
 string bord[5]={"lion","dragon","ninja","iceman","wolf"};
 map<string,int> hp,atk,cnt;
 int M,N,R,K,T;
-struct Warrior{
-    string name;
-    bool color;//
-    int id;
-    mutable int strength;
-    int place;
-    int dir;
-    int weapon[3];
-    int attk;
-    mutable int swordatk;
-    mutable int arrowrem;
-    int icestep;//iceman steps
-    int loyalty;
-    double morale;
-    Warrior(string s,int ptr,int M_have,int c){
+
+Caseinfo ANS(M,N,R,K,T,rord,bord,hp,atk);
+
+Warrior::Warrior(string s,int ptr,int M_have,int c){
         name=s;
         id=ptr;
         color=c;
@@ -64,8 +42,9 @@ struct Warrior{
         else    swordatk=0;
         if (weapon[2])  arrowrem=3;
         else    arrowrem=0;
-    }
-    bool operator < (const Warrior &b)const{
+}
+
+bool Warrior::operator < (const Warrior &b)const{
         if (place==b.place){
             if (color==b.color){
                 return name<b.name;
@@ -74,34 +53,25 @@ struct Warrior{
         }
         return place<b.place;
     }
-};
-struct City{
-    int flag;//
-    int m;
-    int pos;
-    int prevwinner;//
-    City(int p=0){
+
+City::City(int p){
         flag=0;
         m=0;
         pos=p;
         prevwinner=0;
     }
-};
+
 City city[maxn];
 set<Warrior> samurai;
-struct Base{
-    int m;
-    bool down;
-    int ptr;//
-    int enemycnt;
-    Base(int _M){
+Base::Base(int _M){
         m=_M;
         down=0;
         ptr=0;
         enemycnt=0;
-    }
-    Warrior build(bool color){
-        if (!color){//
+}
+
+Warrior Base::build(bool color){
+        if (!color){//红色 按照红色造
             string name=rord[ptr%5];
             if (m>=hp[name]){
                 m-=hp[name];
@@ -123,8 +93,8 @@ struct Base{
             }
             return Warrior("no",0,0,0);
         }
-    }
-};
+}
+
 void init(){
     rep(i,0,N+1){
         city[i]=City(i);
@@ -133,6 +103,15 @@ void init(){
     atk.clear();
     samurai.clear();
 }
+
+void saveAState(int t,Base rb,Base bb)
+{
+    vector<City> cityvec;
+    for(auto i:city)
+        cityvec.push_back(i);
+    ANS.addState(Gamestate(t,samurai,rb,bb,cityvec));
+}
+
 bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
     if (wred.color) swap(wred,wblue);
     Warrior mred=wred,mblue=wblue;
@@ -167,9 +146,11 @@ bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
     }
     return 0;
 }
+
 QString output="";
 int solve(vector<int> v,int indexcnt);
-QString correctrun(QString data){
+
+QPair<QString,Caseinfo> correctrun(QString data){
     QStringList lines = data.split(QRegExp("\n"), QString::SkipEmptyParts);
     vector<int> intArray;
 
@@ -187,6 +168,7 @@ QString correctrun(QString data){
             }
         }
     }
+
     int indexcnt=0;
     int t;
     t=intArray[indexcnt++];
@@ -197,9 +179,8 @@ QString correctrun(QString data){
         output+=QString("Case %1:\n").arg(i);
         indexcnt=solve(intArray,indexcnt);
     }
-    return output;
+    return QPair<QString,Caseinfo>(output,ANS);
 }
-
 
 int solve(vector<int> v,int indexcnt){
     //scanf("%d%d%d%d%d",&M,&N,&R,&K,&T);
@@ -244,6 +225,7 @@ int solve(vector<int> v,int indexcnt){
                         .arg(p.id);
                 if (p.name=="dragon")   output += QString("Its morale is %1\n").arg(p.morale, 0, 'f', 2);
                 if (p.name=="lion")   output+= QString("Its loyalty is %1\n").arg(p.loyalty);
+
                 p=bbase.build(1);
                 if (p.name!="no")   output+=QString("%1:%2 blue %3 %4 born\n")
                         .arg(hour, 3, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
@@ -252,6 +234,7 @@ int solve(vector<int> v,int indexcnt){
                         .arg(p.id);
                 if (p.name=="dragon")   output += QString("Its morale is %1\n").arg(p.morale, 0, 'f', 2);//printf("Its morale is %.2lf\n",p.morale);
                 if (p.name=="lion")   output+= QString("Its loyalty is %1\n").arg(p.loyalty);//printf("Its loyalty is %d\n",p.loyalty);
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (5):{
@@ -294,8 +277,9 @@ int solve(vector<int> v,int indexcnt){
                     }
                 }
                 for (auto i:tobeerased){
-                    samurai.erase(i);
+                    samurai.erase(i);//这里直接移除了
                 }
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (10):{
@@ -304,13 +288,13 @@ int solve(vector<int> v,int indexcnt){
                     if (!i.color&&i.place==N+1) continue;
                     if (i.color&&i.place==0)    continue;
                     auto k=i;
-                    k.place+=k.dir;
+                    k.place+=k.dir;//修改了place
                     tobeerased.emplace(k);
                 }
                 for (auto k:tobeerased){
                     auto tmp=k;
-                    tmp.place-=tmp.dir;
-                    samurai.erase(tmp);
+                    tmp.place-=tmp.dir;//还原了place
+                    samurai.erase(tmp);//删除了旧place的武士
                     if (k.name=="iceman"){
                         k.icestep++;
                         if (k.icestep&1^1){
@@ -364,9 +348,10 @@ int solve(vector<int> v,int indexcnt){
                         //printf("%.3d:%.2d %s %s %d marched to city %d with %d elements and force %d\n",
                             //hour,minute,k.color?"blue":"red",k.name.c_str(),k.id,k.place,k.strength,k.attk);
                     }
-                    samurai.emplace(k);
+                    samurai.emplace(k);//新的武士放进去
                 }
-                if (rbase.down||bbase.down)    return indexcnt;
+                if (rbase.down||bbase.down)    return indexcnt;//return 游戏结束
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (20):{
@@ -374,6 +359,7 @@ int solve(vector<int> v,int indexcnt){
                     city[i].m+=10;
                 }
                 break;
+                saveAState(t,rbase,bbase);
             }
             case (30):{
                 vector<Warrior> cnt[maxn];
@@ -402,6 +388,7 @@ int solve(vector<int> v,int indexcnt){
                         }
                     }
                 }
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (35):{
@@ -436,6 +423,7 @@ int solve(vector<int> v,int indexcnt){
                         }
                     }
                 }
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (38):{
@@ -469,6 +457,7 @@ int solve(vector<int> v,int indexcnt){
                 for (auto i:tobeerased){
                     samurai.erase(i);
                 }
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (40):{
@@ -703,6 +692,7 @@ int solve(vector<int> v,int indexcnt){
                         ptr->strength+=8;
                     }
                 }
+                saveAState(t,rbase,bbase);
                 break;
             }
             case (50):{
@@ -716,6 +706,7 @@ int solve(vector<int> v,int indexcnt){
                       .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                       .arg(bbase.m); // 红色基地的元素数量
             //printf("%.3d:%.2d %d elements in blue headquarter\n",hour,minute,bbase.m);
+            //这里是报数就不存状态了！！
                 break;
             }
             case (55):{

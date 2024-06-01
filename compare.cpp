@@ -4,17 +4,12 @@
 #include "CaseInfo.h"
 #include <QFile>
 #include <QMessageBox>
-compare::compare(Widget* ww,inputwidget* iww,QWidget *parent) :
+compare::compare(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::compare)
 {
-    w=ww;
-    iw=iww;
     ui->setupUi(this);
     ui->totestbt->hide();
-    ui->difLines->hide();
-    ui->cTextLines->hide();
-    ui->wTextLines->hide();
 }
 
 compare::~compare()
@@ -24,16 +19,20 @@ compare::~compare()
 
 void compare::sendData(QString data){
     DATA=data;
-    output=correctrun(data);//这是一个QPair<QString,Caseinfo>
+    output=correctrun(data);//这是一个Allcases类型 里面包含vector <QPair<QString,Caseinfo> >
     //把output改成了一个成员变量
-    QString text=output.first;
+    QString text="";
+    for(auto i:output.Cases)
+        text+=i.first;
     ui->correctext->setText(text);
     ui->correctext->setReadOnly(true);
 }
 
 void compare::on_totestbt_clicked()
 {
-    test* world = new test(output,Time,Casenum);//wrongtext按了confirm之后别改
+    qDebug()<<"after CREATING test:  casenum:"<<Casenum;
+    if(Casenum<=0)  Casenum=1;
+    test* world = new test(output.Cases[Casenum-1],Time,Casenum);//wrongtext按了confirm之后别改
     //这里把那个pair传到下一个test里面
     world->show();
 }
@@ -183,18 +182,8 @@ void compare::on_confirmbt_clicked()
             /// int casenum;表示第一次出现错误的case数                                                  ///
             /// int minutes;表示第一次出现错误的前一个时刻,由hours*60+minutes得到。例：016:40则minutes=1000///
             ///////////////////////////////////////////////////////////////////////////////////////////
-
-            //加下面两行
+            //
             Time=minutes;
             Casenum=casenum;
-
             ui->totestbt->show();//
-}
-
-
-void compare::on_tomainbt_clicked()
-{
-    w->show();
-    delete iw;
-    delete this;
 }

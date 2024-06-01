@@ -1,4 +1,5 @@
- #include "mycitybutton.h"
+#include "mycitybutton.h"
+#include "CaseInfo.h"
 #include <QDebug>
 
 Mycitybutton::Mycitybutton(const City &C,QWidget *parent,QString name,QIcon image,bool mask,bool music):Mybutton(parent,name,image,mask,music)
@@ -6,8 +7,27 @@ Mycitybutton::Mycitybutton(const City &C,QWidget *parent,QString name,QIcon imag
     //cityflag 0 white  1 red  2 blue
     qDebug()<<"Mycitybutton constructed";
     QString flag,lastwin;
-    if(!C.flag) flag="White";
+    if(!C.flag)
+    {
+        flag="White";
+        this->setIcon(QIcon(":/images/QTpictures/Plaincity.png"));
+        this->setIconSize(this->size());
+    }
+
     else flag=C.flag==1? "Red":"Blue";
+
+    if(C.flag==1)
+    {
+        this->setIcon(QIcon(":/images/QTpictures/Redcity.png"));
+        this->setIconSize(this->size());
+    }
+
+    else if(C.flag==2)
+    {
+        this->setIcon(QIcon(":/images/QTpictures/Bluecity.png"));
+        this->setIconSize(this->size());
+    }
+
     if(!C.prevwinner) lastwin="None";
     else lastwin=C.prevwinner==1? "Redsoldier":"Blue soldier";
 
@@ -17,11 +37,6 @@ Mycitybutton::Mycitybutton(const City &C,QWidget *parent,QString name,QIcon imag
 
     layout->addWidget(L1);
     layout->addWidget(L2);
-
-    incityp=new incity(C);
-    connect(this,&QPushButton::clicked,[&]{
-        incityp->show();
-    });
 }
 
 void Mycitybutton::addWarrior(const Warrior& W){
@@ -47,9 +62,26 @@ void Mycitybutton::addWarrior(const Warrior& W){
 void Mycitybutton::rewrite(const City &C)
 {
     QString flag,lastwin;
-    if(!C.flag) flag="White";
+    if(!C.flag)
+    {
+        flag="White";
+        this->setIcon(QIcon(":/images/QTpictures/Plaincity.png"));
+        this->setIconSize(this->size());
+    }
     else flag=C.flag==1? "Red":"Blue";
-    incityp->set(C);
+
+    if(C.flag==1)
+    {
+        this->setIcon(QIcon(":/images/QTpictures/Redcity.png"));
+        this->setIconSize(this->size());
+    }
+
+    else if(C.flag==2)
+    {
+        this->setIcon(QIcon(":/images/QTpictures/Bluecity.png"));
+        this->setIconSize(this->size());
+    }
+
     if(!C.prevwinner) lastwin="None";
     else lastwin=C.prevwinner==1? "Redsoldier":"Blue soldier";
     Labels[0]->setText(QString("旗帜颜色：%1").arg(flag));

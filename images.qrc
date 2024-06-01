@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>QTpictures/Background.jpg</file>
+        <file>QTpictures/Bluebase.png</file>
+        <file>QTpictures/Bluecity.png</file>
+        <file>QTpictures/dragon.png</file>
+        <file>QTpictures/Greencity.png</file>
+        <file>QTpictures/Phoenix-Fabelwesen.jpg</file>
+        <file>QTpictures/Redbase.png</file>
+        <file>QTpictures/Redcity.png</file>
+        <file>QTpictures/Plaincity.png</file>
+    </qresource>
+</RCC>

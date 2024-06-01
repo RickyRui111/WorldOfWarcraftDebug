@@ -16,8 +16,8 @@ using namespace std;
 class Warrior{
 public:
     string name;
-    bool color;//0r 1 b
-    int id;//
+    bool color;//
+    int id;
     mutable int strength;
     int place;
     int dir;
@@ -34,9 +34,9 @@ public:
 
 class City{
 public:
-    int flag;//0 1 r 2 b
+    int flag;//
     int m;
-    int pos;//0开始
+    int pos;
     int prevwinner;//
     City(int p=0);
 };
@@ -78,7 +78,13 @@ public:
     void addState(Gamestate g);
 };
 
-QPair<QString,Caseinfo> correctrun(QString data);
+class Allcases{
+public:
+    vector< QPair<QString,Caseinfo> > Cases;
+    void addACase(const QPair<QString,Caseinfo> & Case);
+};
+
+Allcases correctrun(QString data);
 void init();
 void saveAState(int t,Base rb,Base bb);
 bool virtualfight(int place,Warrior wblue,Warrior wred,int col);
