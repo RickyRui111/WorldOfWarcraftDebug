@@ -1,5 +1,39 @@
 #include "CaseInfo.h"
 
+void Allcases::addACase(const QPair<QString,Caseinfo> & Case)
+{
+    Cases.push_back(Case);
+}
+
+Gamestate::Gamestate(int t,set<Warrior> &s,Base &rb,Base &bb,vector<City> city,QString str):ctime(t),
+    rbase(rb),bbase(bb),report(str)
+{
+    for(auto i:s)
+        samurai.emplace(i);
+    for(auto i:city)
+        cityline.push_back(i);
+}
+
+Caseinfo::Caseinfo(vector<Gamestate> game)
+{
+    for(auto i:game)
+        info.push_back(i);
+}
+
+Caseinfo::Caseinfo(int m,int n,int r,int k,int t,string *ror,string *bor,map<string,int> &H,map<string,int> &at)
+:M(m),N(n),R(r),K(k),T(t),hp(H),atk(at)
+{
+    copy(ror,ror+5,rord);
+    copy(bor,bor+5,bord);
+};
+
+Caseinfo::Caseinfo(){};
+
+void Caseinfo::addState(Gamestate g)
+{
+    info.push_back(g);
+}
+
 #define maxn 35
 #define rep(a,b,c)	for (int (a)=b;a<=c;a++)
 #define per(a,b,c)	for (int (a)=b;a>=c;a--)
@@ -11,8 +45,6 @@ string rord[5]={"iceman","lion","wolf","ninja","dragon"};
 string bord[5]={"lion","dragon","ninja","iceman","wolf"};
 map<string,int> hp,atk,cnt;
 int M,N,R,K,T;
-
-Caseinfo ANS(M,N,R,K,T,rord,bord,hp,atk);
 
 Warrior::Warrior(string s,int ptr,int M_have,int c){
         name=s;
@@ -104,14 +136,6 @@ void init(){
     samurai.clear();
 }
 
-void saveAState(int t,Base rb,Base bb)
-{
-    vector<City> cityvec;
-    for(auto i:city)
-        cityvec.push_back(i);
-    ANS.addState(Gamestate(t,samurai,rb,bb,cityvec));
-}
-
 bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
     if (wred.color) swap(wred,wblue);
     Warrior mred=wred,mblue=wblue;
@@ -148,9 +172,9 @@ bool virtualfight(int place,Warrior wblue,Warrior wred,int col){//
 }
 
 QString output="";
-int solve(vector<int> v,int indexcnt);
+Caseinfo *ANS;
 
-QPair<QString,Caseinfo> correctrun(QString data){
+Allcases correctrun(QString data){
     QStringList lines = data.split(QRegExp("\n"), QString::SkipEmptyParts);
     vector<int> intArray;
 
@@ -172,14 +196,55 @@ QPair<QString,Caseinfo> correctrun(QString data){
     int indexcnt=0;
     int t;
     t=intArray[indexcnt++];
-    //scanf("%d",&t);
-    output="";
+    Allcases All;
     rep(i,1,t){
         //printf("Case %d:\n",i);
+        //
+        //以下为提前要一个值而已
+        //scanf("%d",&t);
+        int indexcn=indexcnt;
+        vector<int>v=intArray;
+        M=v[indexcn++];
+        N=v[indexcn++];
+        R=v[indexcn++];
+        K=v[indexcn++];
+        T=v[indexcn++];
+        hp["dragon"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["ninja"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["iceman"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["lion"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        hp["wolf"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["dragon"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["ninja"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["iceman"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["lion"]=v[indexcn++];
+        //scanf("%d",&tmp);
+        atk["wolf"]=v[indexcn++];
+        output="";
+        Caseinfo ans(M,N,R,K,T,rord,bord,hp,atk);
+        ANS=&ans;
         output+=QString("Case %1:\n").arg(i);
         indexcnt=solve(intArray,indexcnt);
+        QPair<QString,Caseinfo> tmp(output,ans);
+        All.addACase(tmp);
     }
-    return QPair<QString,Caseinfo>(output,ANS);
+    return All;
+}
+
+void saveAState(int t,Base rb,Base bb,QString str)
+{
+    vector<City> cityvec;
+    for(int i=1;i<=N;++i)
+        cityvec.push_back(city[i]);
+    ANS->addState(Gamestate(t,samurai,rb,bb,cityvec,str));
 }
 
 int solve(vector<int> v,int indexcnt){
@@ -218,32 +283,35 @@ int solve(vector<int> v,int indexcnt){
         switch (minute){
             case (0):{
                 auto p=rbase.build(0);
-                if (p.name!="no")   output+=QString("%1:%2 red %3 %4 born\n")
+                QString outpu="";
+                if (p.name!="no")   outpu+=QString("%1:%2 red %3 %4 born\n")
                         .arg(hour, 3, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
                         .arg(minute, 2, 10, QChar('0')) // 同样地处理分钟
                         .arg(p.name.c_str()) // 直接使用 QString
                         .arg(p.id);
-                if (p.name=="dragon")   output += QString("Its morale is %1\n").arg(p.morale, 0, 'f', 2);
-                if (p.name=="lion")   output+= QString("Its loyalty is %1\n").arg(p.loyalty);
+                if (p.name=="dragon")   outpu += QString("Its morale is %1\n").arg(p.morale, 0, 'f', 2);
+                if (p.name=="lion")   outpu+= QString("Its loyalty is %1\n").arg(p.loyalty);
 
                 p=bbase.build(1);
-                if (p.name!="no")   output+=QString("%1:%2 blue %3 %4 born\n")
+                if (p.name!="no")   outpu+=QString("%1:%2 blue %3 %4 born\n")
                         .arg(hour, 3, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
                         .arg(minute, 2, 10, QChar('0')) // 同样地处理分钟
                         .arg(p.name.c_str()) // 直接使用 QString
                         .arg(p.id);
-                if (p.name=="dragon")   output += QString("Its morale is %1\n").arg(p.morale, 0, 'f', 2);//printf("Its morale is %.2lf\n",p.morale);
-                if (p.name=="lion")   output+= QString("Its loyalty is %1\n").arg(p.loyalty);//printf("Its loyalty is %d\n",p.loyalty);
-                saveAState(t,rbase,bbase);
+                if (p.name=="dragon")   outpu += QString("Its morale is %1\n").arg(p.morale, 0, 'f', 2);//printf("Its morale is %.2lf\n",p.morale);
+                if (p.name=="lion")   outpu+= QString("Its loyalty is %1\n").arg(p.loyalty);//printf("Its loyalty is %d\n",p.loyalty);
+                saveAState(t,rbase,bbase,outpu);
+                output+=outpu;
                 break;
             }
             case (5):{
+                QString outpu="";
                 vector<Warrior> tobeerased;
                 for (auto i:samurai){
                     if (i.name=="lion"&&i.loyalty<=0){
                         if (i.place==0&&!i.color){
                             QString colorStr = i.color ? "blue" : "red";
-                            output+=QString("%1:%2 %3 %4 %5 ran away\n")
+                            outpu+=QString("%1:%2 %3 %4 %5 ran away\n")
                                     .arg(hour, 3, 10, QChar('0')) // 3 宽度，10 基数（十进制），用 '0' 填充
                                     .arg(minute, 2, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
                                     .arg(colorStr) // 条件字符串
@@ -254,7 +322,7 @@ int solve(vector<int> v,int indexcnt){
                         }
                         if (i.place==N+1&&i.color){
                             QString colorStr = i.color ? "blue" : "red";
-                            output+=QString("%1:%2 %3 %4 %5 ran away\n")
+                            outpu+=QString("%1:%2 %3 %4 %5 ran away\n")
                                     .arg(hour, 3, 10, QChar('0')) // 3 宽度，10 基数（十进制），用 '0' 填充
                                     .arg(minute, 2, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
                                     .arg(colorStr) // 条件字符串
@@ -265,7 +333,7 @@ int solve(vector<int> v,int indexcnt){
                         }
                         if (i.place>=1&&i.place<=N){
                             QString colorStr = i.color ? "blue" : "red";
-                            output+=QString("%1:%2 %3 %4 %5 ran away\n")
+                            outpu+=QString("%1:%2 %3 %4 %5 ran away\n")
                                     .arg(hour, 3, 10, QChar('0')) // 3 宽度，10 基数（十进制），用 '0' 填充
                                     .arg(minute, 2, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
                                     .arg(colorStr) // 条件字符串
@@ -279,10 +347,12 @@ int solve(vector<int> v,int indexcnt){
                 for (auto i:tobeerased){
                     samurai.erase(i);//这里直接移除了
                 }
-                saveAState(t,rbase,bbase);
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
                 break;
             }
             case (10):{
+                QString outpu="";
                 set<Warrior> tobeerased;
                 for (auto i:samurai){
                     if (!i.color&&i.place==N+1) continue;
@@ -306,7 +376,7 @@ int solve(vector<int> v,int indexcnt){
                     if (k.place==0||k.place==N+1){
                         QString colorStr = k.color ? "blue" : "red";
                         QString oppositeColorStr = k.color ? "red" : "blue";
-                        output+= QString("%1:%2 %3 %4 %5 reached %6 headquarter with %7 elements and force %8\n")
+                        outpu+= QString("%1:%2 %3 %4 %5 reached %6 with %7 elements and force %8\n")
                                 .arg(hour, 3, 10, QChar('0'))
                                 .arg(minute, 2, 10, QChar('0'))
                                 .arg(colorStr)
@@ -320,14 +390,14 @@ int solve(vector<int> v,int indexcnt){
                         if (k.color)    rbase.enemycnt++;
                         else    bbase.enemycnt++;
                         if (rbase.enemycnt>=2&&!rbase.down){
-                            output+=QString("%1:%2 red headquarter was taken\n")
+                            outpu+=QString("%1:%2 red headquarter was taken\n")
                                           .arg(hour, 3, 10, QChar('0')) // 3 宽度，10 基数（十进制），用 '0' 填充
                                           .arg(minute, 2, 10, QChar('0')); // 2 宽度，10 基数（十进制），用 '0' 填充
                             //printf("%1:%2 red headquarter was taken\n",hour,minute);
                             rbase.down=1;
                         }
                         if (bbase.enemycnt>=2&&!bbase.down){
-                            output+=QString("%1:%2 blue headquarter was taken\n")
+                            outpu+=QString("%1:%2 blue headquarter was taken\n")
                                           .arg(hour, 3, 10, QChar('0')) // 3 宽度，10 基数（十进制），用 '0' 填充
                                           .arg(minute, 2, 10, QChar('0')); // 2 宽度，10 基数（十进制），用 '0' 填充
                             //printf("%.3d:%.2d blue headquarter was taken\n",hour,minute);
@@ -336,7 +406,7 @@ int solve(vector<int> v,int indexcnt){
                     }
                     else{
                         QString colorStr = k.color ? "blue" : "red";
-                        output+= QString("%1:%2 %3 %4 %5 marched to city %6 headquarter with %7 elements and force %8\n")
+                        outpu+= QString("%1:%2 %3 %4 %5 marched to city %6 with %7 elements and force %8\n")
                                 .arg(hour, 3, 10, QChar('0'))
                                 .arg(minute, 2, 10, QChar('0'))
                                 .arg(colorStr)
@@ -350,18 +420,20 @@ int solve(vector<int> v,int indexcnt){
                     }
                     samurai.emplace(k);//新的武士放进去
                 }
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
                 if (rbase.down||bbase.down)    return indexcnt;//return 游戏结束
-                saveAState(t,rbase,bbase);
                 break;
             }
             case (20):{
                 rep(i,1,N){
                     city[i].m+=10;
                 }
+                saveAState(t,rbase,bbase,QString(""));
                 break;
-                saveAState(t,rbase,bbase);
             }
             case (30):{
+                QString outpu="";
                 vector<Warrior> cnt[maxn];
                 for (auto i:samurai){
                     cnt[i.place].push_back(i);
@@ -369,7 +441,7 @@ int solve(vector<int> v,int indexcnt){
                 rep(i,1,N){
                     if (cnt[i].size()==1){
                         QString colorStr = cnt[i][0].color ? "blue" : "red";
-                        output+=QString("%1:%2 %3 %4 %5 earned %6 elements for his headquarter\n")
+                        outpu+=QString("%1:%2 %3 %4 %5 earned %6 elements for his headquarter\n")
                                 .arg(hour, 3, 10, QChar('0')) // 3 宽度，10 基数（十进制），用 '0' 填充
                                 .arg(minute, 2, 10, QChar('0')) // 2 宽度，10 基数（十进制），用 '0' 填充
                                 .arg(colorStr) // 条件字符串
@@ -388,17 +460,19 @@ int solve(vector<int> v,int indexcnt){
                         }
                     }
                 }
-                saveAState(t,rbase,bbase);
+                saveAState(t,rbase,bbase,outpu);
+                output+=outpu;
                 break;
             }
             case (35):{
+                QString outpu="";
                 set<Warrior> tobechanged;
                 for (auto i=samurai.begin();i!=samurai.end();i++){
                     if (i->arrowrem){//
                         for (auto j=samurai.begin();j!=samurai.end();j++){
                             if (j->color!=i->color&&j->place==i->place+i->dir&&i->place+i->dir!=0&&i->place+i->dir!=N+1){//
                                 if (j->strength>R)
-                                    output+= QString("%1:%2 %3 %4 %5 shot\n")
+                                    outpu+= QString("%1:%2 %3 %4 %5 shot\n")
                                                                 .arg(hour, 3, 10, QChar('0'))
                                                                 .arg(minute, 2, 10, QChar('0'))
                                                                 .arg(i->color?"blue":"red")
@@ -406,7 +480,7 @@ int solve(vector<int> v,int indexcnt){
                                                                 .arg(i->id);
                                     //printf("%.3d:%.2d %s %s %d shot\n",hour,minute,i->color?"blue":"red",i->name.c_str(),i->id);
                                 else
-                                    output+= QString("%1:%2 %3 %4 %5 shot and killed %6 %7 %8\n")
+                                    outpu+= QString("%1:%2 %3 %4 %5 shot and killed %6 %7 %8\n")
                                                                 .arg(hour, 3, 10, QChar('0'))
                                                                 .arg(minute, 2, 10, QChar('0'))
                                                                 .arg(i->color?"blue":"red")
@@ -423,10 +497,12 @@ int solve(vector<int> v,int indexcnt){
                         }
                     }
                 }
-                saveAState(t,rbase,bbase);
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
                 break;
             }
             case (38):{
+                QString outpu="";
                 set<Warrior> tobeerased;
                 for (auto i:samurai){
                     for (auto j:samurai){
@@ -437,7 +513,7 @@ int solve(vector<int> v,int indexcnt){
                             if (wred.color) swap(wred,wblue);
                             bool use=virtualfight(i.place,wblue,wred,i.color);
                             if (use){
-                                output+=QString("%1:%2 %3 %4 %5 used a bomb and killed %6 %7 %8\n")
+                                outpu+=QString("%1:%2 %3 %4 %5 used a bomb and killed %6 %7 %8\n")
                                     .arg(hour, 3, 10, QChar('0')) // 小时，2位宽度，十进制，用0填充
                                     .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                     .arg(i.color?"blue":"red") // 攻击者颜色
@@ -457,10 +533,12 @@ int solve(vector<int> v,int indexcnt){
                 for (auto i:tobeerased){
                     samurai.erase(i);
                 }
-                saveAState(t,rbase,bbase);
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
                 break;
             }
             case (40):{
+                QString outpu="";
                 set<Warrior> tobeerased,tobeadded;
                 set<Warrior> tobebluerewarded,toberedrewarded;
                 int bluem=bbase.m,redm=rbase.m;
@@ -479,7 +557,7 @@ int solve(vector<int> v,int indexcnt){
                             if (wred.strength>0&&wblue.strength<=0) goto RedSurvived;
                             if ((city[place].flag==0&&place&1)||city[place].flag==1){//
                                 first=0;
-                                output+= QString("%1:%2 red %3 %4 attacked blue %5 %6 in city %7 with %8 elements and force %9\n")
+                                outpu+= QString("%1:%2 red %3 %4 attacked blue %5 %6 in city %7 with %8 elements and force %9\n")
                                     .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充（如果确实需要3位）
                                     .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                     .arg(QString::fromStdString(wred.name)) // 红色方的名字
@@ -495,7 +573,7 @@ int solve(vector<int> v,int indexcnt){
                                 wred.swordatk*=0.8;
                                 if (wblue.strength>0){
                                     if (wblue.name!="ninja"){//
-                                        output+=QString("%1:%2 blue %3 %4 fought back against red %5 %6 in city %7\n")
+                                        outpu+=QString("%1:%2 blue %3 %4 fought back against red %5 %6 in city %7\n")
                                                 .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                                 .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                                 .arg(QString::fromStdString(wblue.name)) // 蓝色方的名字
@@ -512,7 +590,7 @@ int solve(vector<int> v,int indexcnt){
                             }
                             if ((city[place].flag==0&&place&1^1)||city[place].flag==2){//
                                 first=1;
-                                output+=QString("%1:%2 blue %3 %4 attacked red %5 %6 in city %7 with %8 elements and force %9\n")
+                                outpu+=QString("%1:%2 blue %3 %4 attacked red %5 %6 in city %7 with %8 elements and force %9\n")
                                         .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                         .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                         .arg(QString::fromStdString(wblue.name)) // 蓝色方的名字
@@ -528,7 +606,7 @@ int solve(vector<int> v,int indexcnt){
                                 wblue.swordatk*=0.8;
                                 if (wred.strength>0){
                                     if (wred.name!="ninja"){
-                                        output+=QString("%1:%2 red %3 %4 fought back against blue %5 %6 in city %7\n")
+                                        outpu+=QString("%1:%2 red %3 %4 fought back against blue %5 %6 in city %7\n")
                                                 .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                                 .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                                 .arg(QString::fromStdString(wred.name)) // 红色方的名字
@@ -546,7 +624,7 @@ int solve(vector<int> v,int indexcnt){
                             }
                             //
                             if (wred.strength>0&&wblue.strength<=0){//
-                                output+=QString("%1:%2 blue %3 %4 was killed in city %5\n")
+                                outpu+=QString("%1:%2 blue %3 %4 was killed in city %5\n")
                                         .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                         .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                         .arg(QString::fromStdString(wblue.name)) // 蓝色方的名字
@@ -562,7 +640,7 @@ int solve(vector<int> v,int indexcnt){
                                 }
                                 if (wred.name=="dragon")  wred.morale+=0.2;//dragon
                                 if (wred.name=="dragon"&&first==0&&wred.morale>0.8){
-                                    output+=QString("%1:%2 red dragon %3 yelled in city %4\n")
+                                    outpu+=QString("%1:%2 red dragon %3 yelled in city %4\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(wred.id) // 红色龙的ID
@@ -570,7 +648,7 @@ int solve(vector<int> v,int indexcnt){
                                     //    printf("%.3d:%.2d red dragon %d yelled in city %d\n",hour,minute,wred.id,place);
                                 }
                                 if (city[place].m){//
-                                    output+=QString("%1:%2 red %3 %4 earned %5 elements for his headquarter\n")
+                                    outpu+=QString("%1:%2 red %3 %4 earned %5 elements for his headquarter\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(QString::fromStdString(wred.name)) // 红色方的名字
@@ -582,7 +660,7 @@ int solve(vector<int> v,int indexcnt){
                                     city[place].m=0;
                                 }
                                 if (city[place].flag!=1&&city[place].prevwinner==1){//
-                                    output+=QString("%1:%2 red flag raised in city %3\n")
+                                    outpu+=QString("%1:%2 red flag raised in city %3\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(place); // 地点
@@ -594,7 +672,7 @@ int solve(vector<int> v,int indexcnt){
                                 tobeadded.emplace(wred);
                             }
                             if (wred.strength<=0&&wblue.strength>0){//
-                                output+=QString("%1:%2 red %3 %4 was killed in city %5\n")
+                                outpu+=QString("%1:%2 red %3 %4 was killed in city %5\n")
                                         .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                         .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                         .arg(QString::fromStdString(wred.name)) // 将 std::string 转换为 QString
@@ -610,7 +688,7 @@ int solve(vector<int> v,int indexcnt){
                                 }
                                 if (wblue.name=="dragon")  wblue.morale+=0.2;//dragon
                                 if (wblue.name=="dragon"&&first==1&&wblue.morale>0.8){
-                                    output+=QString("%1:%2 blue dragon %3 yelled in city %4\n")
+                                    outpu+=QString("%1:%2 blue dragon %3 yelled in city %4\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(wblue.id) // 蓝色龙的ID
@@ -618,7 +696,7 @@ int solve(vector<int> v,int indexcnt){
                                     //printf("%.3d:%.2d blue dragon %d yelled in city %d\n",hour,minute,wblue.id,place);
                                 }
                                 if (city[place].m){//
-                                    output+=QString("%1:%2 blue %3 %4 earned %5 elements for his headquarter\n")
+                                    outpu+=QString("%1:%2 blue %3 %4 earned %5 elements for his headquarter\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(QString::fromStdString(wblue.name)) // 蓝色方的名字
@@ -630,7 +708,7 @@ int solve(vector<int> v,int indexcnt){
                                     city[place].m=0;
                                 }
                                 if (city[place].flag!=2&&city[place].prevwinner==2){//
-                                    output+=QString("%1:%2 blue flag raised in city %3\n")
+                                    outpu+=QString("%1:%2 blue flag raised in city %3\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(place); // 地点
@@ -646,7 +724,7 @@ int solve(vector<int> v,int indexcnt){
                                 if (wred.name=="dragon")    wred.morale-=0.2;
                                 if (wblue.name=="dragon")    wblue.morale-=0.2;
                                 if (wred.name=="dragon"&&first==0&&wred.morale>0.8){
-                                    output+=QString("%1:%2 red dragon %3 yelled in city %4\n")
+                                    outpu+=QString("%1:%2 red dragon %3 yelled in city %4\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(wred.id) // 红色龙的ID
@@ -654,7 +732,7 @@ int solve(vector<int> v,int indexcnt){
                                     //printf("%.3d:%.2d red dragon %d yelled in city %d\n",hour,minute,wred.id,place);
                                 }
                                 if (wblue.name=="dragon"&&first==1&&wblue.morale>0.8){
-                                    output+=QString("%1:%2 blue dragon %3 yelled in city %4\n")
+                                    outpu+=QString("%1:%2 blue dragon %3 yelled in city %4\n")
                                             .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                             .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                             .arg(wblue.id) // 蓝色龙的ID
@@ -692,61 +770,65 @@ int solve(vector<int> v,int indexcnt){
                         ptr->strength+=8;
                     }
                 }
-                saveAState(t,rbase,bbase);
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
                 break;
             }
             case (50):{
-                output+=QString("%1:%2 %3 elements in red headquarter\n")
+                QString outpu="";
+                outpu+=QString("%1:%2 %3 elements in red headquarter\n")
                         .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                         .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                         .arg(rbase.m); // 红色基地的元素数量
             //printf("%.3d:%.2d %d elements in red headquarter\n",hour,minute,rbase.m);
-              output+=QString("%1:%2 %3 elements in blue headquarter\n")
+              outpu+=QString("%1:%2 %3 elements in blue headquarter\n")
                       .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                       .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                       .arg(bbase.m); // 红色基地的元素数量
             //printf("%.3d:%.2d %d elements in blue headquarter\n",hour,minute,bbase.m);
-            //这里是报数就不存状态了！！
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
                 break;
             }
             case (55):{
+                QString outpu="";
                 for (auto i=samurai.begin();i!=samurai.end();i++){
                     if (!i->color){
                         Warrior k=*i;
                         k.weapon[0]=k.swordatk;
                         k.weapon[2]=k.arrowrem;
                         bool first=1;
-                        output+= QString("%1:%2 red %3 %4 has ").arg(
+                        outpu+= QString("%1:%2 red %3 %4 has ").arg(
                                     hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                     .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                     .arg(QString::fromStdString(k.name)) // 转换为 QString 的 k.name
                                     .arg(k.id); // k 的 ID
                         //printf("%.3d:%.2d red %s %d has ",hour,minute,k.name.c_str(),k.id);
                         if (k.weapon[2]){
-                            output+=QString("arrow(%1)").arg(k.weapon[2]);
+                            outpu+=QString("arrow(%1)").arg(k.weapon[2]);
                             //printf("arrow(%d)",k.weapon[2]);
                             first=0;
                         }
                         if (k.weapon[1]){
                             if (!first)
-                                output+=",";
+                                outpu+=",";
                                 //printf(",");
-                            output+="bomb";
+                            outpu+="bomb";
                             //printf("bomb");
                             first=0;
                         }
                         if (k.weapon[0]){
                             if (!first)
-                                output+=",";
+                                outpu+=",";
                                 //printf(",");
-                            output+=QString("sword(%1)").arg(k.weapon[0]);
+                            outpu+=QString("sword(%1)").arg(k.weapon[0]);
                             //printf("sword(%d)",k.weapon[0]);
                             first=0;
                         }
                         if (first)
-                            output+="no weapon";
+                            outpu+="no weapon";
                             //printf("no weapon");
-                        output+="\n";
+                        outpu+="\n";
                         //printf("\n");
                     }
                 }
@@ -756,40 +838,43 @@ int solve(vector<int> v,int indexcnt){
                         k.weapon[0]=k.swordatk;
                         k.weapon[2]=k.arrowrem;
                         bool first=1;
-                        output+=QString("%1:%2 blue %3 %4 has ")
+                        outpu+=QString("%1:%2 blue %3 %4 has ")
                                 .arg(hour, 3, 10, QChar('0')) // 小时，3位宽度，十进制，用0填充
                                 .arg(minute, 2, 10, QChar('0')) // 分钟，2位宽度，十进制，用0填充
                                 .arg(QString::fromStdString(k.name)) // 将 k.name（std::string）转换为 QString
                                 .arg(k.id); // k 的 ID
                         //printf("%.3d:%.2d blue %s %d has ",hour,minute,k.name.c_str(),k.id);
                         if (k.weapon[2]){
-                            output+= QString("arrow(%1)").arg(k.weapon[2]);
+                            outpu+= QString("arrow(%1)").arg(k.weapon[2]);
                             //printf("arrow(%d)",k.weapon[2]);
                             first=0;
                         }
                         if (k.weapon[1]){
                             if (!first)
-                                output+=",";
+                                outpu+=",";
                             //printf(",");
-                        output+="bomb";
+                        outpu+="bomb";
                         //printf("bomb");
                             first=0;
                         }
                         if (k.weapon[0]){
                             if (!first)
-                                output+=",";
+                                outpu+=",";
                             //printf(",");
-                        output+=QString("sword(%1)").arg(k.weapon[0]);
+                        outpu+=QString("sword(%1)").arg(k.weapon[0]);
                         //printf("sword(%d)",k.weapon[0]);
                             first=0;
                         }
                         if (first)
-                            output+="no weapon";
+                            outpu+="no weapon";
                         //printf("no weapon");
-                    output+="\n";
+                    outpu+="\n";
                     //printf("\n");
                     }
                 }
+                output+=outpu;
+                saveAState(t,rbase,bbase,outpu);
+                break;
             }
         }
     }

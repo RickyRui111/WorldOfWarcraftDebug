@@ -4,9 +4,13 @@
 #include"tipswidget.h"
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::Widget)
+    , ui(new Ui::Widget),backgroundl(new QLabel(this))
 {
     ui->setupUi(this);
+    backgroundl->resize(this->size());
+    backgroundl ->setPixmap(QPixmap(":/images/QTpictures/openjudgebackground.png"));
+    backgroundl ->setScaledContents(true);
+    backgroundl->lower();
 }
 
 Widget::~Widget()

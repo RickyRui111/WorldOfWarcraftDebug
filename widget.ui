@@ -6,85 +6,128 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>831</width>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Widget</string>
+   <string>欢迎来到魔兽Debug阶段</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
+    <normaloff>:/QTpictures/titleicon.png</normaloff>:/QTpictures/titleicon.png</iconset>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>440</x>
      <y>90</y>
-     <width>281</width>
-     <height>81</height>
+     <width>391</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>Times New Roman</family>
+     <family>Stencil</family>
      <pointsize>36</pointsize>
     </font>
    </property>
    <property name="text">
-    <string>魔兽debug</string>
+    <string>debug</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>410</y>
-     <width>151</width>
-     <height>20</height>
+     <x>520</x>
+     <y>530</y>
+     <width>321</width>
+     <height>51</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Times New Roman</family>
+     <pointsize>16</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>made by : rsm xdw yfl</string>
    </property>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>190</y>
-     <width>171</width>
-     <height>161</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
-     <widget class="QPushButton" name="inputbt">
-      <property name="text">
-       <string>开始测试</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="tipsbt">
-      <property name="text">
-       <string>常见bug</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <widget class="QPushButton" name="exitbt">
    <property name="geometry">
     <rect>
-     <x>590</x>
-     <y>30</y>
-     <width>80</width>
-     <height>20</height>
+     <x>670</x>
+     <y>40</y>
+     <width>101</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
     <string>退出</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>90</y>
+     <width>371</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>华文彩云</family>
+     <pointsize>36</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>魔兽可视化</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="tipsbt">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>380</y>
+     <width>201</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>方正舒体</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>常见bug</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="inputbt">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>230</y>
+     <width>201</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>方正舒体</family>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>开始测试</string>
+   </property>
+  </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>文本对比器</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
+    <normaloff>:/QTpictures/titleicon.png</normaloff>:/QTpictures/titleicon.png</iconset>
   </property>
   <widget class="QTextEdit" name="wrongtext">
    <property name="geometry">
@@ -37,10 +41,16 @@
    <property name="geometry">
     <rect>
      <x>410</x>
-     <y>20</y>
-     <width>101</width>
-     <height>16</height>
+     <y>10</y>
+     <width>151</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>正确输出：</string>
@@ -51,9 +61,15 @@
     <rect>
      <x>30</x>
      <y>20</y>
-     <width>161</width>
-     <height>16</height>
+     <width>181</width>
+     <height>21</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>请输入你的输出：</string>
@@ -76,14 +92,20 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>420</y>
-     <width>271</width>
+     <y>430</y>
+     <width>272</width>
      <height>51</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QPushButton" name="confirmbt">
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>开始对比</string>
       </property>
@@ -91,6 +113,12 @@
     </item>
     <item>
      <widget class="QPushButton" name="totestbt">
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>查看可视化世界</string>
       </property>
@@ -98,26 +126,26 @@
     </item>
    </layout>
   </widget>
-  <widget class="QLabel" name="wTextLines">
+  <widget class="QLabel" name="cTextLines">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>233</x>
      <y>20</y>
-     <width>54</width>
-     <height>12</height>
+     <width>121</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
     <string>TextLabel</string>
    </property>
   </widget>
-  <widget class="QLabel" name="cTextLines">
+  <widget class="QLabel" name="wTextLines">
    <property name="geometry">
     <rect>
-     <x>660</x>
+     <x>573</x>
      <y>20</y>
-     <width>54</width>
-     <height>12</height>
+     <width>151</width>
+     <height>20</height>
     </rect>
    </property>
    <property name="text">
@@ -127,17 +155,35 @@
   <widget class="QLabel" name="difLines">
    <property name="geometry">
     <rect>
-     <x>220</x>
+     <x>113</x>
      <y>440</y>
-     <width>54</width>
-     <height>12</height>
+     <width>171</width>
+     <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>TextLabel</string>
+    <string>diflabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="aclabel">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>90</y>
+     <width>501</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

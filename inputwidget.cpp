@@ -82,7 +82,7 @@ QString readTxtFile(const QString &filePath) {
 }
 void inputwidget::on_pushButton_2_clicked()
 {
-    QString filePath = "C:\\Users\\19412\\Documents\\warofwarcraftdebug\\input.txt";
+    QString filePath = ":/images/QTpictures/input.txt";
     QString str = readTxtFile(filePath);
     ui->inputtextEdit->setPlainText(str);
 }

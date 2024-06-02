@@ -11,16 +11,26 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>输入界面</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
+    <normaloff>:/QTpictures/titleicon.png</normaloff>:/QTpictures/titleicon.png</iconset>
   </property>
   <widget class="QPushButton" name="tomainbt">
    <property name="geometry">
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>80</width>
-     <height>20</height>
+     <width>121</width>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>12</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>返回主界面</string>
@@ -41,9 +51,15 @@
     <rect>
      <x>280</x>
      <y>250</y>
-     <width>80</width>
-     <height>20</height>
+     <width>81</width>
+     <height>41</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>11</pointsize>
+    </font>
    </property>
    <property name="text">
     <string>确认</string>
@@ -54,20 +70,32 @@
     <rect>
      <x>20</x>
      <y>70</y>
-     <width>91</width>
-     <height>151</height>
+     <width>121</width>
+     <height>173</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <widget class="QLabel" name="label">
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>样例1：</string>
+       <string>测试样例1：</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton">
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>oj测试样例</string>
       </property>
@@ -75,35 +103,54 @@
     </item>
     <item>
      <widget class="QLabel" name="label_2">
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>样例2</string>
+       <string>测试样例2：</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QPushButton" name="pushButton_2">
+      <property name="font">
+       <font>
+        <family>Agency FB</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>txt测试样例</string>
       </property>
      </widget>
     </item>
-    <item>
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>TextLabel</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_3">
-      <property name="text">
-       <string>样例3：</string>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>10</y>
+     <width>221</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Agency FB</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>请输入你的样例输入</string>
+   </property>
+  </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

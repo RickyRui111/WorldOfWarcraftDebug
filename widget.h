@@ -2,6 +2,7 @@
 #define WIDGET_H
 
 #include <QWidget>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -24,5 +25,6 @@ private slots:
 
 private:
     Ui::Widget *ui;
+    QLabel *backgroundl;
 };
 #endif // WIDGET_H

@@ -1,0 +1,39 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>QTpictures/Background.jpg</file>
+        <file>QTpictures/Bluebase.png</file>
+        <file>QTpictures/Bluecity.png</file>
+        <file>QTpictures/dragon.png</file>
+        <file>QTpictures/Greencity.png</file>
+        <file>QTpictures/Phoenix-Fabelwesen.jpg</file>
+        <file>QTpictures/Redbase.png</file>
+        <file>QTpictures/Redcity.png</file>
+        <file>QTpictures/Plaincity.png</file>
+        <file>QTpictures/arrowp.png</file>
+        <file>QTpictures/blueflagp.jpg</file>
+        <file>QTpictures/bombp.jpg</file>
+        <file>QTpictures/dragon.gif</file>
+        <file>QTpictures/iceman.gif</file>
+        <file>QTpictures/lion.gif</file>
+        <file>QTpictures/ninja.gif</file>
+        <file>QTpictures/nonecityp1.png</file>
+        <file>QTpictures/swordp.jpg</file>
+        <file>QTpictures/wolf.gif</file>
+        <file>QTpictures/nonep.jpg</file>
+        <file>QTpictures/bluecityp.jpg</file>
+        <file>QTpictures/redcityp.jpg</file>
+        <file>QTpictures/redflagp.jpg</file>
+        <file>QTpictures/input.txt</file>
+        <file>QTpictures/stars.png</file>
+        <file>QTpictures/sun.png</file>
+        <file>QTpictures/debugtips.txt</file>
+        <file>QTpictures/white.png</file>
+        <file>QTpictures/Accepted.png</file>
+        <file>QTpictures/openjudgebackground.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>QTpictures/inputprocess.png</file>
+        <file>QTpictures/submit.png</file>
+        <file>QTpictures/titleicon.png</file>
+    </qresource>
+</RCC>
